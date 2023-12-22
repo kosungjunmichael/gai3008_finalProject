@@ -10,7 +10,7 @@ class NumPad extends StatelessWidget {
 
   const NumPad({
     Key? key,
-    this.buttonSize = 70,
+    this.buttonSize = 40,
     this.buttonColor = Colors.transparent,
     this.iconColor = Colors.black,
     required this.delete,
@@ -22,13 +22,12 @@ class NumPad extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(left: 30, right: 30),
+      child: SingleChildScrollView(
       child: Column(
         children: [
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            // implement the number keys (from 0 to 9) with the NumberButton widget
-            // the NumberButton widget is defined in the bottom of this file
             children: [
               NumberButton(
                 number: 1,
@@ -102,7 +101,6 @@ class NumPad extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // this button is used to delete the last number
               IconButton(
                 onPressed: () => delete(),
                 icon: Icon(
@@ -117,7 +115,6 @@ class NumPad extends StatelessWidget {
                 color: buttonColor,
                 controller: controller,
               ),
-              // this button is used to submit the entered value
               IconButton(
                 onPressed: () => onSubmit(),
                 icon: Icon(
@@ -129,6 +126,7 @@ class NumPad extends StatelessWidget {
             ],
           ),
         ],
+      ),
       ),
     );
   }
@@ -155,6 +153,7 @@ class NumberButton extends StatelessWidget {
       height: size,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(size * 0.2),
           backgroundColor: color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(size / 2),
@@ -167,7 +166,7 @@ class NumberButton extends StatelessWidget {
           child: Text(
             number.toString(),
             style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 30),
+                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
           ),
         ),
       ),
@@ -175,16 +174,23 @@ class NumberButton extends StatelessWidget {
   }
 }
 
-class transferFunds extends StatelessWidget {
-  transferFunds({super.key});
-  // text controller
+class transferFunds extends StatefulWidget {
+  transferFunds({Key? key}) : super(key: key);
+
+  @override
+  _transferFundsState createState() => _transferFundsState();
+}
+
+class _transferFundsState extends State<transferFunds> {
   final TextEditingController _myController = TextEditingController();
+  String selectedWithdrawAccount = 'Account 1';
+  String selectedDepositAccount = 'Account A';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: const Color.fromARGB(255, 132, 255, 169),
         title: Center(
             child: const Text('Transfer Funds',
                 style: TextStyle(color: Colors.black, fontSize: 25.0))),
@@ -193,20 +199,53 @@ class transferFunds extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // display the entered numbers
+            Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+            DropdownButton<String>(
+              value: selectedWithdrawAccount,
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedWithdrawAccount = newValue!;
+                });
+              },
+              items: <String>['Account 1', 'Account2', 'Account3']
+              .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            DropdownButton<String>(
+              value: selectedDepositAccount,
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedDepositAccount = newValue!;
+                });
+              },
+              items: <String>['Account A', 'Account B', 'Account C']
+              .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            ],
+            ),
             Container(
-              color: Colors.greenAccent,
+              color: Color.fromARGB(255, 132, 255, 169),
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: SizedBox(
-                  height: 70,
+                  height: 35,
                   child: Center(
                       child: TextField(
                     controller: _myController,
                     textAlign: TextAlign.center,
                     showCursor: false,
                     style: const TextStyle(fontSize: 40),
-                    // Disable the default soft keybaord
                     keyboardType: TextInputType.none,
                   )),
                 ),
@@ -216,14 +255,11 @@ class transferFunds extends StatelessWidget {
               color: Colors.white,
               child: NumPad(
                 buttonSize: 75,
-                // buttonColor: Colors.purple,
-                // iconColor: Colors.deepOrange,
                 controller: _myController,
                 delete: () {
                   _myController.text = _myController.text
                       .substring(0, _myController.text.length - 1);
                 },
-                // do something with the input numbers
                 onSubmit: () {
                   debugPrint('You have deposited: ${_myController.text} USD');
                   showDialog(

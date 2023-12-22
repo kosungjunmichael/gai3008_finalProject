@@ -26,8 +26,20 @@ final List<Map<String, String>> netMap = [
   },
 ];
 
-class hubExchange extends StatelessWidget {
-  const hubExchange({super.key});
+class hubExchange extends StatefulWidget {
+  const hubExchange({Key? key}) : super(key: key);
+
+  @override
+  _hubExchangeState createState() => _hubExchangeState();
+}
+
+class _hubExchangeState extends State<hubExchange> {
+
+  String selectedCurrency = 'USD';
+  String balanceAmount = '\$2,456,557';
+
+  bool isVButtonEnabled = true;
+  bool isCaretButtonEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +76,7 @@ class hubExchange extends StatelessWidget {
                                 children: [
                                   Row(
                                     children: [
-                                      Text('\$2,456,557',
+                                      Text(balanceAmount,
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 25.0)),
@@ -73,16 +85,52 @@ class hubExchange extends StatelessWidget {
                                   ),
                                   Row(
                                     children: [
-                                      Text('USD'),
+                                      Text(selectedCurrency),
                                       Column(
                                         children: <Widget>[
                                           TextButton(
                                             child: const Text('^'),
-                                            onPressed: () {},
+                                            onPressed: isCaretButtonEnabled?() async {
+                                              setState(() {
+                                                isCaretButtonEnabled = false;
+                                              });
+                                              
+                                              double exchangeRate = 1100.0;
+                                              double usdAmount = double.parse(balanceAmount.replaceAll('\$', '').replaceAll(',', '')) / exchangeRate;
+                                              balanceAmount = '\$${usdAmount.toStringAsFixed(2)}';
+
+                                              setState(() {
+                                                selectedCurrency = 'USD';
+                                              });
+
+                                              await Future.delayed(Duration(seconds: 1));
+                                              setState(() {
+                                                isCaretButtonEnabled = true;
+                                              });
+                                            }
+                                            : null,
                                           ),
                                           TextButton(
                                             child: const Text('v'),
-                                            onPressed: () {},
+                                            onPressed: isVButtonEnabled?() async {
+                                              setState(() {
+                                                isVButtonEnabled = false;
+                                              });
+                                              
+                                              double exchangeRate = 1100.0;
+                                              double krwAmount = double.parse(balanceAmount.replaceAll('\$', '').replaceAll(',', '')) * exchangeRate;
+                                              balanceAmount = '\$${krwAmount.toStringAsFixed(2)}';
+
+                                              setState(() {
+                                                selectedCurrency = 'KRW';
+                                              });
+
+                                              await Future.delayed(Duration(seconds: 1));
+                                              setState(() {
+                                                isVButtonEnabled = true;
+                                              });
+                                            }
+                                            :null,
                                           ),
                                         ],
                                       )

@@ -21,20 +21,11 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -60,5 +51,31 @@ class DefaultFirebaseOptions {
     authDomain: 'mobile-programming-b719f.firebaseapp.com',
     storageBucket: 'mobile-programming-b719f.appspot.com',
     measurementId: 'G-3C8KKY7L92',
+  );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyC2ActOWtvIFSZ4cpontMw0idn4sB1K8O8',
+    appId: '1:622002382674:android:e11cb4a6d9354c33fefc8b',
+    messagingSenderId: '622002382674',
+    projectId: 'mobile-programming-b719f',
+    storageBucket: 'mobile-programming-b719f.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCy99Dsb9G8lPHqGtWBDm9qda1TYOrxMXs',
+    appId: '1:622002382674:ios:10358ce73d64a95efefc8b',
+    messagingSenderId: '622002382674',
+    projectId: 'mobile-programming-b719f',
+    storageBucket: 'mobile-programming-b719f.appspot.com',
+    iosBundleId: 'com.example.ex07',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCy99Dsb9G8lPHqGtWBDm9qda1TYOrxMXs',
+    appId: '1:622002382674:ios:02d36d155e0d12dbfefc8b',
+    messagingSenderId: '622002382674',
+    projectId: 'mobile-programming-b719f',
+    storageBucket: 'mobile-programming-b719f.appspot.com',
+    iosBundleId: 'com.example.ex07.RunnerTests',
   );
 }
