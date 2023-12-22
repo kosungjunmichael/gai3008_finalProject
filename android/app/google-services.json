@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "622002382674",
+    "project_id": "mobile-programming-b719f",
+    "storage_bucket": "mobile-programming-b719f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622002382674:android:e11cb4a6d9354c33fefc8b",
+        "android_client_info": {
+          "package_name": "com.example.ex07"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2ActOWtvIFSZ4cpontMw0idn4sB1K8O8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

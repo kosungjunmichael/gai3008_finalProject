@@ -1,0 +1,6 @@
+{
+    "markdown.marp.themes": [
+        "mati.css"
+    ],
+    "markdown.marp.enableHtml": true
+}
