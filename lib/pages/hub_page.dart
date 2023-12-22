@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'transfer_model.dart';
+import '/models/transfer_model.dart';
 
 final List<Map<String, String>> netMap = [
   {
@@ -28,6 +28,8 @@ final List<Map<String, String>> netMap = [
 
 class hubExchange extends StatelessWidget {
   const hubExchange({super.key});
+
+  final int total = 2456557;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,7 @@ class hubExchange extends StatelessWidget {
                                 children: [
                                   Row(
                                     children: [
-                                      Text('\$2,456,557',
+                                      Text('\$${total}',
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 25.0)),
