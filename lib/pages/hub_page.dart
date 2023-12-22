@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import 'transfer_model.dart';
+import '/models/transfer_model.dart';
+import '/models/new_account.dart';
+import '/models/balance_list.dart';
+import '/models/delete_account.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final List<Map<String, String>> netMap = [
   {
@@ -40,6 +45,10 @@ class _hubExchangeState extends State<hubExchange> {
 
   bool isVButtonEnabled = true;
   bool isCaretButtonEnabled = true;
+  final user = FirebaseAuth.instance.currentUser!;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final int total = 2456557;
 
   @override
   Widget build(BuildContext context) {
@@ -181,6 +190,7 @@ class _hubExchangeState extends State<hubExchange> {
                             backgroundColor: Colors.black,
                             onPressed: () {
                               // Withdraw funds
+                              showMyDialog(context, user.uid);
                             },
                             tooltip: 'Create Account',
                             child: Icon(Icons.add),
@@ -202,6 +212,7 @@ class _hubExchangeState extends State<hubExchange> {
                             backgroundColor: Colors.black,
                             onPressed: () {
                               // Transfer funds
+                              showAccountListDialog(context);
                             },
                             tooltip: 'Delete Account',
                             child: Icon(Icons.remove),
@@ -229,33 +240,7 @@ class _hubExchangeState extends State<hubExchange> {
               ),
             ),
           ),
-          Flexible(
-            child: ListView.builder(
-              itemCount: netMap.length,
-              itemBuilder: (context, int index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(netMap[index]['image']!),
-                    backgroundColor: Colors.white,
-                  ),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(netMap[index]['name']!),
-                      Text(netMap[index]['amount']!),
-                    ],
-                  ),
-                  subtitle: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(netMap[index]['sub']!),
-                      Text(netMap[index]['CPO']!)
-                    ],
-                  ),
-                );
-              },
-            ),
-          )
+          Flexible(child: AccountSummaryList())
         ],
       ),
     );
