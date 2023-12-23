@@ -7,31 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 
-final List<Map<String, String>> netMap = [
-  {
-    'name': 'Cash Balance',
-    'sub': '8 accounts',
-    'amount': "\$23,000,00",
-    'CPO': "99%",
-    'image': 'https://cdn-icons-png.flaticon.com/512/2878/2878574.png',
-  },
-  {
-    'name': 'Savings',
-    'sub': 'Savings',
-    'amount': "\$128,375",
-    'CPO': "<10%",
-    'image':
-        'https://png.pngtree.com/png-vector/20190320/ourlarge/pngtree-vector-vault-icon-png-image_850794.jpg',
-  },
-  {
-    'name': 'Crypto',
-    'sub': '2 currencies',
-    'amount': "\$28,182",
-    'CPO': "50%",
-    'image': 'https://cryptologos.cc/logos/chainlink-link-logo.png',
-  },
-];
-
 class hubExchange extends StatefulWidget {
   const hubExchange({Key? key}) : super(key: key);
 
@@ -57,8 +32,6 @@ class _hubExchangeState extends State<hubExchange> {
   final String user = FirebaseAuth.instance.currentUser!.uid;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   // double totalBalance = await getTotalBalance();
-
-  final int total = 2456557;
 
   @override
   void initState() {
