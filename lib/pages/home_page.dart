@@ -5,7 +5,6 @@ import 'hub_page.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  //sign user out method
   void signUserOut() {
     FirebaseAuth.instance.signOut();
   }
@@ -13,9 +12,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [
-        IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))
-      ]),
       body:
           // Center(child: Text("LOGGED IN AS: ${user.email}"))
           const MyHomePage(),
