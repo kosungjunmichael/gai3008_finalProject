@@ -65,10 +65,12 @@ class _MyDialogWidgetState extends State<MyDialogWidget> {
         ),
         TextButton(
           onPressed: () {
+            int? intValue = int.tryParse(numberController.text);
+
             _firestore.collection('Accounts').add({
               'UID': widget.user,
               'accountName': textController.text,
-              'balance': numberController.text,
+              'balance': intValue,
               'type': accountType,
             });
             Navigator.of(context).pop();

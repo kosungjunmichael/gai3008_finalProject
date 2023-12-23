@@ -46,6 +46,12 @@ class _hubExchangeState extends State<hubExchange> {
   //// Refresh Update
   late Timer _timer;
 
+  // double getTotalBalanceForAllTypes(List<DocumentSnapshot> accounts) {
+  //   return accounts
+  //       .map((doc) => double.parse(doc['balance'].toString()))
+  //       .fold(0, (sum, balance) => sum + balance);
+  // }
+
   bool isVButtonEnabled = true;
   bool isCaretButtonEnabled = true;
   final String user = FirebaseAuth.instance.currentUser!.uid;
@@ -57,12 +63,12 @@ class _hubExchangeState extends State<hubExchange> {
   @override
   void initState() {
     super.initState();
-    fetchTotalBalance();
 
     _timer = Timer.periodic(Duration(seconds: 5), (Timer timer) {
       setState(() {
         // Trigger a rebuild by updating the state
       });
+      fetchTotalBalance();
     });
   }
 
