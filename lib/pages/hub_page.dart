@@ -16,7 +16,7 @@ class hubExchange extends StatefulWidget {
 
 class _hubExchangeState extends State<hubExchange> {
   String selectedCurrency = 'USD';
-  String balanceAmount = '';
+  String balanceAmount = '0';
   late double totalBalance;
   //// Refresh Update
   late Timer _timer;
