@@ -39,13 +39,12 @@ class hubExchange extends StatefulWidget {
 }
 
 class _hubExchangeState extends State<hubExchange> {
-
   String selectedCurrency = 'USD';
   String balanceAmount = '\$2,456,557';
 
   bool isVButtonEnabled = true;
   bool isCaretButtonEnabled = true;
-  final user = FirebaseAuth.instance.currentUser!;
+  final String user = FirebaseAuth.instance.currentUser!.uid;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final int total = 2456557;
@@ -99,47 +98,75 @@ class _hubExchangeState extends State<hubExchange> {
                                         children: <Widget>[
                                           TextButton(
                                             child: const Text('^'),
-                                            onPressed: isCaretButtonEnabled?() async {
-                                              setState(() {
-                                                isCaretButtonEnabled = false;
-                                              });
-                                              
-                                              double exchangeRate = 1100.0;
-                                              double usdAmount = double.parse(balanceAmount.replaceAll('\$', '').replaceAll(',', '')) / exchangeRate;
-                                              balanceAmount = '\$${usdAmount.toStringAsFixed(2)}';
+                                            onPressed: isCaretButtonEnabled
+                                                ? () async {
+                                                    setState(() {
+                                                      isCaretButtonEnabled =
+                                                          false;
+                                                    });
 
-                                              setState(() {
-                                                selectedCurrency = 'USD';
-                                              });
+                                                    double exchangeRate =
+                                                        1100.0;
+                                                    double usdAmount = double
+                                                            .parse(
+                                                                balanceAmount
+                                                                    .replaceAll(
+                                                                        '\$',
+                                                                        '')
+                                                                    .replaceAll(
+                                                                        ',',
+                                                                        '')) /
+                                                        exchangeRate;
+                                                    balanceAmount =
+                                                        '\$${usdAmount.toStringAsFixed(2)}';
 
-                                              await Future.delayed(Duration(seconds: 1));
-                                              setState(() {
-                                                isCaretButtonEnabled = true;
-                                              });
-                                            }
-                                            : null,
+                                                    setState(() {
+                                                      selectedCurrency = 'USD';
+                                                    });
+
+                                                    await Future.delayed(
+                                                        Duration(seconds: 1));
+                                                    setState(() {
+                                                      isCaretButtonEnabled =
+                                                          true;
+                                                    });
+                                                  }
+                                                : null,
                                           ),
                                           TextButton(
                                             child: const Text('v'),
-                                            onPressed: isVButtonEnabled?() async {
-                                              setState(() {
-                                                isVButtonEnabled = false;
-                                              });
-                                              
-                                              double exchangeRate = 1100.0;
-                                              double krwAmount = double.parse(balanceAmount.replaceAll('\$', '').replaceAll(',', '')) * exchangeRate;
-                                              balanceAmount = '\$${krwAmount.toStringAsFixed(2)}';
+                                            onPressed: isVButtonEnabled
+                                                ? () async {
+                                                    setState(() {
+                                                      isVButtonEnabled = false;
+                                                    });
 
-                                              setState(() {
-                                                selectedCurrency = 'KRW';
-                                              });
+                                                    double exchangeRate =
+                                                        1100.0;
+                                                    double krwAmount = double
+                                                            .parse(
+                                                                balanceAmount
+                                                                    .replaceAll(
+                                                                        '\$',
+                                                                        '')
+                                                                    .replaceAll(
+                                                                        ',',
+                                                                        '')) *
+                                                        exchangeRate;
+                                                    balanceAmount =
+                                                        '\$${krwAmount.toStringAsFixed(2)}';
 
-                                              await Future.delayed(Duration(seconds: 1));
-                                              setState(() {
-                                                isVButtonEnabled = true;
-                                              });
-                                            }
-                                            :null,
+                                                    setState(() {
+                                                      selectedCurrency = 'KRW';
+                                                    });
+
+                                                    await Future.delayed(
+                                                        Duration(seconds: 1));
+                                                    setState(() {
+                                                      isVButtonEnabled = true;
+                                                    });
+                                                  }
+                                                : null,
                                           ),
                                         ],
                                       )
@@ -167,7 +194,8 @@ class _hubExchangeState extends State<hubExchange> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => transferFunds()),
+                                    builder: (context) =>
+                                        transferFunds(user: user)),
                               );
                             },
                             tooltip: 'Transfer Funds',
@@ -190,7 +218,7 @@ class _hubExchangeState extends State<hubExchange> {
                             backgroundColor: Colors.black,
                             onPressed: () {
                               // Withdraw funds
-                              showMyDialog(context, user.uid);
+                              newAccountInput(context, user);
                             },
                             tooltip: 'Create Account',
                             child: Icon(Icons.add),
@@ -212,7 +240,7 @@ class _hubExchangeState extends State<hubExchange> {
                             backgroundColor: Colors.black,
                             onPressed: () {
                               // Transfer funds
-                              showAccountListDialog(context);
+                              showAccountListDialog(context, user);
                             },
                             tooltip: 'Delete Account',
                             child: Icon(Icons.remove),

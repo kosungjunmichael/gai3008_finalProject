@@ -6,16 +6,10 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   //sign user out method
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [
-        IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))
-      ]),
       body:
           // Center(child: Text("LOGGED IN AS: ${user.email}"))
           const MyHomePage(),
@@ -33,6 +27,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
   final user = FirebaseAuth.instance.currentUser!;
+
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
 
   @override
   void initState() {
@@ -69,6 +67,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
+                    Container(
+                        child: IconButton(
+                            onPressed: signUserOut, icon: Icon(Icons.logout)))
                   ],
                 ),
               ),

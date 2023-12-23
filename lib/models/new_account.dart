@@ -80,7 +80,7 @@ class _MyDialogWidgetState extends State<MyDialogWidget> {
   }
 }
 
-Future<void> showMyDialog(BuildContext context, String user) async {
+Future<void> newAccountInput(BuildContext context, String user) async {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
