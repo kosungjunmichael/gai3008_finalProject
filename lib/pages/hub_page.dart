@@ -5,6 +5,7 @@ import '/models/balance_list.dart';
 import '/models/delete_account.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
 final List<Map<String, String>> netMap = [
   {
@@ -40,14 +41,30 @@ class hubExchange extends StatefulWidget {
 
 class _hubExchangeState extends State<hubExchange> {
   String selectedCurrency = 'USD';
-  String balanceAmount = '\$2,456,557';
+  String balanceAmount = '';
+  late double totalBalance;
+  //// Refresh Update
+  late Timer _timer;
 
   bool isVButtonEnabled = true;
   bool isCaretButtonEnabled = true;
   final String user = FirebaseAuth.instance.currentUser!.uid;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // double totalBalance = await getTotalBalance();
 
   final int total = 2456557;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTotalBalance();
+
+    _timer = Timer.periodic(Duration(seconds: 5), (Timer timer) {
+      setState(() {
+        // Trigger a rebuild by updating the state
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,15 +99,14 @@ class _hubExchangeState extends State<hubExchange> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Text(balanceAmount,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 25.0)),
-                                      Text('.00'),
-                                    ],
-                                  ),
+                                  Row(children: [
+                                    Text(
+                                      '\$${balanceAmount}',
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 25.0),
+                                    ),
+                                    Text('.00'),
+                                  ]),
                                   Row(
                                     children: [
                                       Text(selectedCurrency),
@@ -118,7 +134,7 @@ class _hubExchangeState extends State<hubExchange> {
                                                                         '')) /
                                                         exchangeRate;
                                                     balanceAmount =
-                                                        '\$${usdAmount.toStringAsFixed(2)}';
+                                                        '${usdAmount.toStringAsFixed(2)}';
 
                                                     setState(() {
                                                       selectedCurrency = 'USD';
@@ -154,7 +170,7 @@ class _hubExchangeState extends State<hubExchange> {
                                                                         '')) *
                                                         exchangeRate;
                                                     balanceAmount =
-                                                        '\$${krwAmount.toStringAsFixed(2)}';
+                                                        '${krwAmount.toStringAsFixed(2)}';
 
                                                     setState(() {
                                                       selectedCurrency = 'KRW';
@@ -272,5 +288,40 @@ class _hubExchangeState extends State<hubExchange> {
         ],
       ),
     );
+  }
+
+  Future<void> fetchTotalBalance() async {
+    try {
+      double balance = await getTotalBalance();
+      setState(() {
+        totalBalance = balance;
+        balanceAmount = totalBalance.toString();
+      });
+    } catch (error) {
+      print('Error fetching total balance: $error');
+    }
+  }
+
+  Future<double> getTotalBalance() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('Accounts')
+          .where('UID', isEqualTo: user)
+          .get();
+
+      double totalBalance = 0.0;
+
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        // Assuming 'balance' is an int field
+        int balance = doc['balance'] ?? 0;
+        totalBalance += balance.toDouble();
+      }
+
+      return totalBalance;
+    } catch (error) {
+      print('Error calculating total balance: $error');
+      // Handle the error according to your requirements
+      throw error;
+    }
   }
 }
