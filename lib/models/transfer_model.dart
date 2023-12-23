@@ -23,111 +23,112 @@ class NumPad extends StatelessWidget {
     return SingleChildScrollView(
       child: Container(
       margin: const EdgeInsets.only(left: 30, right: 30),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              NumberButton(
-                number: 1,
-                size: buttonSize,
-                color: buttonColor,
-                controller: controller,
-              ),
-              NumberButton(
-                number: 2,
-                size: buttonSize,
-                color: buttonColor,
-                controller: controller,
-              ),
-              NumberButton(
-                number: 3,
-                size: buttonSize,
-                color: buttonColor,
-                controller: controller,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              NumberButton(
-                number: 4,
-                size: buttonSize,
-                color: buttonColor,
-                controller: controller,
-              ),
-              NumberButton(
-                number: 5,
-                size: buttonSize,
-                color: buttonColor,
-                controller: controller,
-              ),
-              NumberButton(
-                number: 6,
-                size: buttonSize,
-                color: buttonColor,
-                controller: controller,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              NumberButton(
-                number: 7,
-                size: buttonSize,
-                color: buttonColor,
-                controller: controller,
-              ),
-              NumberButton(
-                number: 8,
-                size: buttonSize,
-                color: buttonColor,
-                controller: controller,
-              ),
-              NumberButton(
-                number: 9,
-                size: buttonSize,
-                color: buttonColor,
-                controller: controller,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                onPressed: () => delete(),
-                icon: Icon(
-                  Icons.backspace,
-                  color: iconColor,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                NumberButton(
+                  number: 1,
+                  size: buttonSize,
+                  color: buttonColor,
+                  controller: controller,
                 ),
-                iconSize: buttonSize,
-              ),
-              NumberButton(
-                number: 0,
-                size: buttonSize,
-                color: buttonColor,
-                controller: controller,
-              ),
-              IconButton(
-                onPressed: () => onSubmit(),
-                icon: Icon(
-                  Icons.done_rounded,
-                  color: iconColor,
+                NumberButton(
+                  number: 2,
+                  size: buttonSize,
+                  color: buttonColor,
+                  controller: controller,
                 ),
-                iconSize: buttonSize,
-              ),
-            ],
-          ),
-        ],
-      ),
-      ),
+                NumberButton(
+                  number: 3,
+                  size: buttonSize,
+                  color: buttonColor,
+                  controller: controller,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                NumberButton(
+                  number: 4,
+                  size: buttonSize,
+                  color: buttonColor,
+                  controller: controller,
+                ),
+                NumberButton(
+                  number: 5,
+                  size: buttonSize,
+                  color: buttonColor,
+                  controller: controller,
+                ),
+                NumberButton(
+                  number: 6,
+                  size: buttonSize,
+                  color: buttonColor,
+                  controller: controller,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                NumberButton(
+                  number: 7,
+                  size: buttonSize,
+                  color: buttonColor,
+                  controller: controller,
+                ),
+                NumberButton(
+                  number: 8,
+                  size: buttonSize,
+                  color: buttonColor,
+                  controller: controller,
+                ),
+                NumberButton(
+                  number: 9,
+                  size: buttonSize,
+                  color: buttonColor,
+                  controller: controller,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  onPressed: () => delete(),
+                  icon: Icon(
+                    Icons.backspace,
+                    color: iconColor,
+                  ),
+                  iconSize: buttonSize,
+                ),
+                NumberButton(
+                  number: 0,
+                  size: buttonSize,
+                  color: buttonColor,
+                  controller: controller,
+                ),
+                IconButton(
+                  onPressed: () => onSubmit(),
+                  icon: Icon(
+                    Icons.done_rounded,
+                    color: iconColor,
+                  ),
+                  iconSize: buttonSize,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),)
     );
   }
 }
@@ -175,7 +176,9 @@ class NumberButton extends StatelessWidget {
 }
 
 class transferFunds extends StatefulWidget {
-  transferFunds({Key? key}) : super(key: key);
+  final String user;
+
+  transferFunds({required this.user});
 
   @override
   _transferFundsState createState() => _transferFundsState();
@@ -200,39 +203,39 @@ class _transferFundsState extends State<transferFunds> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-            DropdownButton<String>(
-              value: selectedWithdrawAccount,
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedWithdrawAccount = newValue!;
-                });
-              },
-              items: <String>['Account 1', 'Account2', 'Account3']
-              .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            DropdownButton<String>(
-              value: selectedDepositAccount,
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedDepositAccount = newValue!;
-                });
-              },
-              items: <String>['Account A', 'Account B', 'Account C']
-              .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            ],
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                DropdownButton<String>(
+                  value: selectedWithdrawAccount,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedWithdrawAccount = newValue!;
+                    });
+                  },
+                  items: <String>['Account 1', 'Account2', 'Account3']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+                DropdownButton<String>(
+                  value: selectedDepositAccount,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedDepositAccount = newValue!;
+                    });
+                  },
+                  items: <String>['Account A', 'Account B', 'Account C']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ],
             ),
             Container(
               color: Color.fromARGB(255, 132, 255, 169),

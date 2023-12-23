@@ -5,9 +5,7 @@ import 'hub_page.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
-  }
+  //sign user out method
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +27,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
   final user = FirebaseAuth.instance.currentUser!;
+
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
 
   @override
   void initState() {
@@ -65,6 +67,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
+                    Container(
+                        child: IconButton(
+                            onPressed: signUserOut, icon: Icon(Icons.logout)))
                   ],
                 ),
               ),

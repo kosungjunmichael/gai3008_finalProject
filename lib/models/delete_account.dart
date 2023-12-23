@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AccountListDialog extends StatefulWidget {
+  final String user;
+
+  AccountListDialog({required this.user});
+
   @override
   _AccountListDialogState createState() => _AccountListDialogState();
 }
@@ -18,15 +22,13 @@ class _AccountListDialogState extends State<AccountListDialog> {
 
   Future<void> _refreshAccounts() async {
     setState(() {
-      _accountsFuture = _firestore
-          .collection('Accounts')
-          // .where('confirm_status', isEqualTo: user.uid)
-          .get();
+      _accountsFuture = _firestore.collection('Accounts').get();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // print(widget.user);
     return AlertDialog(
       title: Text('Account List'),
       content: FutureBuilder<QuerySnapshot>(
@@ -42,11 +44,22 @@ class _AccountListDialogState extends State<AccountListDialog> {
             // Display the list of accounts with delete buttons
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: snapshot.data!.docs.map((doc) {
+              children: snapshot.data!.docs.where((doc) {
+                // if UID is the same as user UID
+                final uid = doc['UID'];
+                if (uid == widget.user) {
+                  return true;
+                }
+                return false;
+              }).map((doc) {
                 return ListTile(
                   title: Text(doc['accountName']),
-                  subtitle:
-                      Text('Type: ${doc['type']}, Balance: ${doc['balance']}'),
+                  subtitle: Column(
+                    children: [
+                      Text('Type: ${doc['type']}'),
+                      Text(' Balance: ${doc['balance']}')
+                    ],
+                  ),
                   trailing: IconButton(
                     icon: Icon(Icons.delete),
                     onPressed: () {
@@ -81,11 +94,11 @@ class _AccountListDialogState extends State<AccountListDialog> {
   }
 }
 
-Future<void> showAccountListDialog(BuildContext context) async {
+Future<void> showAccountListDialog(BuildContext context, String user) async {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
-      return AccountListDialog();
+      return AccountListDialog(user: user);
     },
   );
 }
