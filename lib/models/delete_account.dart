@@ -22,13 +22,16 @@ class _AccountListDialogState extends State<AccountListDialog> {
 
   Future<void> _refreshAccounts() async {
     setState(() {
-      _accountsFuture = _firestore.collection('Accounts').get();
+      _accountsFuture = _firestore
+          .collection('Accounts')
+          .where('UID', isEqualTo: widget.user)
+          .get();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // print(widget.user);
+    // print(_accountsFuture.docs[0].id);
     return AlertDialog(
       title: Text('Account List'),
       content: FutureBuilder<QuerySnapshot>(
@@ -44,14 +47,7 @@ class _AccountListDialogState extends State<AccountListDialog> {
             // Display the list of accounts with delete buttons
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: snapshot.data!.docs.where((doc) {
-                // if UID is the same as user UID
-                final uid = doc['UID'];
-                if (uid == widget.user) {
-                  return true;
-                }
-                return false;
-              }).map((doc) {
+              children: snapshot.data!.docs.map((doc) {
                 return ListTile(
                   title: Text(doc['accountName']),
                   subtitle: Column(

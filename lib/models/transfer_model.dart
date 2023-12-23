@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NumPad extends StatelessWidget {
   final double buttonSize;
@@ -186,8 +187,14 @@ class transferFunds extends StatefulWidget {
 
 class _transferFundsState extends State<transferFunds> {
   final TextEditingController _myController = TextEditingController();
-  String selectedWithdrawAccount = 'Account 1';
-  String selectedDepositAccount = 'Account A';
+  String? selectedWithdrawAccount;
+  String? selectedDepositAccount;
+
+  @override
+  void initState() {
+    super.initState();
+    // Call your asynchronous data retrieval function here
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,35 +212,59 @@ class _transferFundsState extends State<transferFunds> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                DropdownButton<String>(
-                  value: selectedWithdrawAccount,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedWithdrawAccount = newValue!;
-                    });
+                FutureBuilder<List<String>>(
+                  future: getAccountNames(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<String>> snapshot) {
+                    if (snapshot.hasData) {
+                      return DropdownButton<String>(
+                        hint: Text('Withdraw'),
+                        value: selectedWithdrawAccount,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedWithdrawAccount = newValue!;
+                          });
+                        },
+                        items: snapshot.data!
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    return CircularProgressIndicator(); // You can return any widget you'd like here before the data is loaded
                   },
-                  items: <String>['Account 1', 'Account2', 'Account3']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
                 ),
-                DropdownButton<String>(
-                  value: selectedDepositAccount,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedDepositAccount = newValue!;
-                    });
+                FutureBuilder<List<String>>(
+                  future: getAccountNames(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<String>> snapshot) {
+                    if (snapshot.hasData) {
+                      return DropdownButton<String>(
+                        hint: Text('Deposit'),
+                        value: selectedDepositAccount,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedDepositAccount = newValue!;
+                          });
+                        },
+                        items: snapshot.data!
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    return CircularProgressIndicator(); // You can return any widget you'd like here before the data is loaded
                   },
-                  items: <String>['Account A', 'Account B', 'Account C']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
                 ),
               ],
             ),
@@ -265,14 +296,11 @@ class _transferFundsState extends State<transferFunds> {
                 },
                 onSubmit: () {
                   debugPrint('You have deposited: ${_myController.text} USD');
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                            content: Text(
-                              "You have deposited: ${_myController.text} USD",
-                              style: const TextStyle(fontSize: 30),
-                            ),
-                          ));
+
+                  final double transferValue = double.parse(_myController.text);
+                  print(selectedDepositAccount);
+                  transferFunds(selectedWithdrawAccount, selectedDepositAccount,
+                      transferValue);
                 },
               ),
             ),
@@ -280,5 +308,68 @@ class _transferFundsState extends State<transferFunds> {
         ),
       ),
     );
+  }
+
+  Future<List<String>> getAccountNames() async {
+    List<String> accountNames = [];
+    final accounts = await FirebaseFirestore.instance
+        .collection('Accounts')
+        .where('UID', isEqualTo: widget.user)
+        .get();
+    for (var document in accounts.docs) {
+      accountNames.add(document['accountName']);
+    }
+    return accountNames;
+  }
+
+  Future<void> transferFunds(
+      String? withdrawAcc, String? despositAcc, double amountToTransfer) async {
+    final withdrawID = await FirebaseFirestore.instance
+        .collection('Accounts')
+        .where('UID', isEqualTo: widget.user)
+        .where('accountName', isEqualTo: withdrawAcc)
+        .get();
+    final depositID = await FirebaseFirestore.instance
+        .collection('Accounts')
+        .where('UID', isEqualTo: widget.user)
+        .where('accountName', isEqualTo: despositAcc)
+        .get();
+
+    try {
+      final withdrawDocumentId = withdrawID.docs[0].id;
+      // Subtract from the source account
+      await FirebaseFirestore.instance
+          .collection('Accounts')
+          .doc(withdrawID.docs[0].id)
+          .update({
+        'balance': FieldValue.increment(-amountToTransfer),
+      });
+
+      // Add to the destination account
+      await FirebaseFirestore.instance
+          .collection('Accounts')
+          .doc(depositID.docs[0].id)
+          .update({
+        'balance': FieldValue.increment(amountToTransfer),
+      });
+
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                content: Text(
+                  "You have deposited: ${amountToTransfer} USD",
+                  style: const TextStyle(fontSize: 30),
+                ),
+              ));
+    } catch (error) {
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                content: Text(
+                  "There was an error transfering the funds",
+                  style: const TextStyle(fontSize: 30),
+                ),
+              ));
+    }
   }
 }
